@@ -1,8 +1,9 @@
 package lab1;
 
-import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.junit.jupiter.api.Test;
 
 public class ComplexMatrixTest {
 
@@ -335,5 +336,104 @@ public class ComplexMatrixTest {
             {new complex(1, 0), new complex(2, 0)}
         });
         assertThrows(IllegalArgumentException.class, a::determinant);
+    }
+
+    
+    @Test
+    void testDivide() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(2, 0), new complex(4, 0)},
+            {new complex(6, 0), new complex(8, 0)}
+        });
+
+        complex_matrix b = new complex_matrix(new complex[][] {
+            {new complex(2, 0), new complex(0, 0)},
+            {new complex(0, 0), new complex(2, 0)}
+        });
+
+        complex_matrix result = a.divide(b);
+
+        assertEquals(1, result.get(0, 0).real(), 1e-9);
+        assertEquals(2, result.get(0, 1).real(), 1e-9);
+        assertEquals(3, result.get(1, 0).real(), 1e-9);
+        assertEquals(4, result.get(1, 1).real(), 1e-9);
+    }
+
+    @Test
+    void testComplexDivide() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(2, 4)}
+        });
+
+        complex_matrix b = new complex_matrix(new complex[][] {
+            {new complex(1, 1)}
+        });
+
+        complex result = a.divide(b).get(0, 0);
+
+        assertEquals(3, result.real(), 1e-9);
+        assertEquals(1, result.imaginary(), 1e-9);
+    }
+
+    @Test
+    void testDivide3x3() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(2, 0), new complex(3, 0)},
+            {new complex(0, 0), new complex(1, 0), new complex(4, 0)},
+            {new complex(5, 0), new complex(6, 0), new complex(0, 0)}
+        });
+
+        complex_matrix result = a.divide(a);
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                assertEquals(i == j ? 1 : 0, result.get(i, j).real(), 1e-9);
+                assertEquals(0, result.get(i, j).imaginary(), 1e-9);
+            }
+        }
+    }
+
+    @Test
+    void testZeroDeterminant() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(0, 0)},
+            {new complex(0, 0), new complex(1, 0)}
+        });
+
+        complex_matrix b = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(2, 0)},
+            {new complex(2, 0), new complex(4, 0)}
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> a.divide(b));
+    }
+
+    @Test
+    void testDivideSizes() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(2, 0), new complex(3, 0)}
+        });
+
+        complex_matrix b = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(0, 0)},
+            {new complex(0, 0), new complex(1, 0)}
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> a.divide(b));
+    }
+
+    @Test
+    void testDivideNonSquare() {
+        complex_matrix a = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(2, 0)}
+        });
+
+        complex_matrix b = new complex_matrix(new complex[][] {
+            {new complex(1, 0), new complex(2, 0)},
+            {new complex(3, 0), new complex(4, 0)},
+            {new complex(5, 0), new complex(6, 0)}
+        });
+
+        assertThrows(IllegalArgumentException.class, () -> a.divide(b));
     }
 }

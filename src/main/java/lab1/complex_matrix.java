@@ -168,4 +168,76 @@ public class complex_matrix {
 
         return det;
     }
+
+    public complex_matrix divide(complex_matrix other) {
+        if (other.rows() != other.columns()) {
+            throw new IllegalArgumentException("матрица должна быть квадратной");
+        }
+
+        if (columns() != other.rows()) {
+            throw new IllegalArgumentException("эти матрицы нельзя делить");
+        }
+
+        return multiply(other.inverse());
+    }
+
+    public complex_matrix inverse() {
+        if (rows() != columns()) {
+            throw new IllegalArgumentException("матрица должна быть квадратной");
+        }
+
+        complex det = determinant();
+
+        if (det.real() == 0 && det.imaginary() == 0) {
+            throw new IllegalArgumentException("определитель равен нулю");
+        }
+
+        int n = rows();
+
+        if (n == 1) {
+            complex[][] result = {{new complex(1, 0).devide(det)}};
+            return new complex_matrix(result);
+        }
+
+        complex[][] result = new complex[n][n];
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+
+                complex[][] minor = new complex[n - 1][n - 1];
+
+                int new_row = 0;
+
+                for (int row = 0; row < n; row++) {
+                    if (row == i) {
+                        continue;
+                    }
+
+                    int new_col = 0;
+
+                    for (int col = 0; col < n; col++) {
+                        if (col == j) {
+                            continue;
+                        }
+
+                        minor[new_row][new_col] = matrix[row][col];
+                        new_col++;
+                    }
+
+                    new_row++;
+                }
+
+                complex number = new complex_matrix(minor).determinant();
+
+                if ((i + j) % 2 != 0) {
+                    number = new complex(0, 0).subtract(number);
+                }
+
+                result[j][i] = number.devide(det);
+            }
+        }
+
+        return new complex_matrix(result);
+    }
+
 }

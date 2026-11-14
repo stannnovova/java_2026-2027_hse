@@ -43,6 +43,7 @@ public class console_interface {
         System.out.println("5 - умножить матрицы");
         System.out.println("6 - транспонировать");
         System.out.println("7 - найти определитель");
+        System.out.println("8 - разделить одну матрицу на другую");
         System.out.println("0 - выход");
     }
 
@@ -92,6 +93,14 @@ public class console_interface {
         else if (choice.equals("7")) {
             complex det = current.determinant();
             System.out.println("определитель: " + format(det));
+        }
+
+        else if (choice.equals("8")) {
+            System.out.println("введи вторую матрицу:");
+            complex_matrix other = read_matrix();
+
+            current = current.divide(other);
+            print_matrix(current);
         }
 
         else {
